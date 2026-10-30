@@ -1,0 +1,32 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# New → Blueprint → pick this repo.
+services:
+  - type: web
+    name: curbside-connect
+    runtime: docker
+    # Free: sleeps after 15 idle minutes (about a minute to wake), and the demo
+    # data resets to the original fictional set on every wake-up or deploy.
+    # To keep changes and stay awake, switch to "starter" and add:
+    #   disk:
+    #     name: demo-data
+    #     mountPath: /app/data
+    #     sizeGB: 1
+    plan: free
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      # Portfolio copy: the dashboard is open so visitors can click straight in.
+      # Delivery stays simulated, so nothing reaches a real phone or inbox.
+      # To lock it, add DEMO_PASSWORD in the service's Environment tab.
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DEFAULT_TENANT
+        value: kestrel-ridge
+      - key: SMS_PROVIDER
+        value: simulated
+      - key: EMAIL_PROVIDER
+        value: simulated
+      # To go live later, add these in the service's Environment tab (see docs/GOING-LIVE.md):
+      # SMS_PROVIDER=twilio, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER,
+      # EMAIL_PROVIDER=resend, RESEND_API_KEY, RESEND_FROM_EMAIL, RESEND_WEBHOOK_SECRET,
+      # LIVE_ALLOWLIST
